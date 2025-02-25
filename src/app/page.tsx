@@ -1,100 +1,537 @@
+"use client";
+
+import type React from "react";
+
+import { Button } from "@/components/ui/button";
+import {
+  Download,
+  Github,
+  Linkedin,
+  Mail,
+  Twitter,
+  Code,
+  Database,
+  Terminal,
+  Server,
+  Cpu,
+  Globe,
+  Users,
+} from "lucide-react";
+import { Element, animateScroll as scroll } from "react-scroll";
 import Image from "next/image";
+import { motion, useAnimation, useInView } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
+import { Inter } from "next/font/google";
 
-export default function Home() {
+const InterCode = Inter({ subsets: ["latin"] });
+
+// Animation variants
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      delayChildren: 0.3,
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const fadeIn = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.8,
+      ease: "easeInOut",
+    },
+  },
+};
+
+const fadeInLeft = {
+  hidden: { opacity: 0, x: -50 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.8,
+      ease: "easeInOut",
+    },
+  },
+};
+
+const fadeInRight = {
+  hidden: { opacity: 0, x: 50 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.8,
+      ease: "easeInOut",
+    },
+  },
+};
+
+const Counter = ({
+  end,
+  duration = 2000,
+}: {
+  end: number;
+  duration?: number;
+}) => {
+  const [count, setCount] = useState(0);
+  const countRef = useRef(null);
+  const isInView = useInView(countRef, { once: false });
+  const controls = useAnimation();
+
+  useEffect(() => {
+    if (isInView) {
+      controls.start("visible");
+      let start = 0;
+      const increment = end / (duration / 16);
+      const timer = setInterval(() => {
+        start += increment;
+        if (start > end) {
+          setCount(end);
+          clearInterval(timer);
+        } else {
+          setCount(Math.floor(start));
+        }
+      }, 16);
+      return () => clearInterval(timer);
+    } else {
+      controls.start("hidden");
+      setCount(0);
+    }
+  }, [isInView, end, duration, controls]);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <motion.span
+      ref={countRef}
+      initial="hidden"
+      animate={controls}
+      variants={fadeIn}
+    >
+      {count}
+    </motion.span>
+  );
+};
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+const AnimatedSection = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
+  const controls = useAnimation();
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: false, margin: "-100px" });
+
+  useEffect(() => {
+    if (isInView) {
+      controls.start("visible");
+    } else {
+      controls.start("hidden");
+    }
+  }, [controls, isInView]);
+
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={controls}
+      variants={staggerContainer}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+export default function Portfolio() {
+  const [activeSection, setActiveSection] = useState("");
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ["hero", "skills", "projects", "about", "contact"];
+      const scrollPosition = window.scrollY + window.innerHeight / 2;
+
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (
+            scrollPosition >= offsetTop &&
+            scrollPosition < offsetTop + offsetHeight
+          ) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleNavClick = (section: string) => {
+    setActiveSection(section);
+    scroll.scrollTo(document.getElementById(section)!.offsetTop, {
+      duration: 500,
+      smooth: true,
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-black text-white">
+      {/* Navigation */}
+      <nav className="fixed top-0 z-50 w-full bg-black/80 backdrop-blur-sm border-b border-cyan-500/20">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4">
+          <button
+            onClick={() => handleNavClick("hero")}
+            className={`${InterCode.className} text-xl font-bold text-cyan-400 cursor-pointer`}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            NJMG.dev
+          </button>
+          <div className={`${InterCode.className} hidden md:flex gap-8`}>
+            {[
+              { label: "HOME", to: "hero" },
+              { label: "ABOUT", to: "about" },
+              { label: "SKILLS", to: "skills" },
+              { label: "PROJECTS", to: "projects" },
+              { label: "CONTACT", to: "contact" },
+            ].map((item) => (
+              <button
+                key={item.label}
+                onClick={() => handleNavClick(item.to)}
+                className={`hover:text-cyan-400 transition-colors cursor-pointer ${
+                  activeSection === item.to ? "text-cyan-400" : ""
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </nav>
+
+      {/* Hero Section */}
+      <Element name="hero" id="hero">
+        <AnimatedSection className="relative min-h-screen flex items-center pt-16 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(0,255,255,0.15),transparent_50%)]" />
+
+          <div className="container mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <motion.div variants={fadeInLeft} className="space-y-6">
+                <span className="text-cyan-400 text-sm uppercase tracking-wider">
+                  Software Engineer
+                </span>
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+                  Neil Jay Mikheil
+                  <br />
+                  <span className="text-cyan-400">Gammad</span>
+                </h1>
+                <p className="text-gray-400 max-w-lg">
+                  Aspiring software engineer from the Philippines, passionate
+                  about creating innovative solutions and building technology
+                  that makes a difference.
+                </p>
+                <motion.div variants={fadeIn} className="flex gap-4">
+                  <Button className="bg-cyan-500 hover:bg-cyan-600 text-black">
+                    <Download className="mr-2 h-4 w-4" />
+                    Download CV
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="border-cyan-500 text-cyan-400 hover:bg-cyan-500/10"
+                  >
+                    View Projects
+                  </Button>
+                </motion.div>
+              </motion.div>
+              <motion.div variants={fadeInRight} className="relative">
+                <div className="relative h-[500px] w-full rounded-2xl overflow-hidden">
+                  <Image
+                    src="/images/leo.jpg"
+                    alt="Profile"
+                    fill
+                    className="object-cover"
+                  />
+
+                  <div className="absolute inset-0 bg-cyan-500/20" />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent" />
+              </motion.div>
+            </div>
+          </div>
+        </AnimatedSection>
+      </Element>
+
+      {/* About Section */}
+      <Element name="about" id="about">
+        <AnimatedSection className="py-20 relative">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,255,255,0.15),transparent_50%)]" />
+
+          <div className="container mx-auto px-4">
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <motion.div variants={fadeInLeft} className="space-y-6">
+                <h2 className="text-4xl font-bold">
+                  ABOUT <span className="text-cyan-400">ME</span>
+                </h2>
+                <p className="text-gray-400">
+                  I am a passionate software engineering student from the
+                  Philippines, currently pursuing my degree at First City
+                  Providential College. My journey in technology began with a
+                  curiosity about how things work, which evolved into a deep
+                  passion for creating innovative solutions through code.
+                </p>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="p-4 rounded-lg bg-gray-900/50 border border-cyan-500/20">
+                    <Terminal className="w-8 h-8 text-cyan-400 mb-2" />
+
+                    <h3 className="text-lg font-bold mb-2">Problem Solver</h3>
+                    <p className="text-gray-400 text-sm">
+                      Analytical thinker with a passion for solving complex
+                      challenges
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-lg bg-gray-900/50 border border-cyan-500/20">
+                    <Users className="w-8 h-8 text-cyan-400 mb-2" />
+
+                    <h3 className="text-lg font-bold mb-2">Team Player</h3>
+                    <p className="text-gray-400 text-sm">
+                      Excellent communicator and collaborative team member
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+              <motion.div variants={fadeInRight} className="relative">
+                <div className="relative h-[600px] w-full rounded-2xl overflow-hidden">
+                  <Image
+                    src="/placeholder.svg?height=600&width=600"
+                    alt="About Me"
+                    fill
+                    className="object-cover"
+                  />
+
+                  <div className="absolute inset-0 bg-cyan-500/20" />
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </AnimatedSection>
+      </Element>
+
+      {/* Skills Section */}
+      <Element name="skills" id="skills">
+        <AnimatedSection className="py-20 relative">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,255,255,0.15),transparent_50%)]" />
+
+          <div className="container mx-auto px-4">
+            <div className="space-y-12">
+              <div className="text-center space-y-4">
+                <motion.h2 variants={fadeIn} className="text-4xl font-bold">
+                  TECHNICAL <span className="text-cyan-400">EXPERTISE</span>
+                </motion.h2>
+                <motion.p
+                  variants={fadeIn}
+                  className="text-gray-400 max-w-2xl mx-auto"
+                >
+                  Proficient in modern software development technologies and
+                  practices
+                </motion.p>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  {
+                    icon: <Code className="w-8 h-8" />,
+                    title: "Frontend Development",
+                    description: "React.js, Next.js, TypeScript, Tailwind CSS",
+                  },
+                  {
+                    icon: <Server className="w-8 h-8" />,
+                    title: "Backend Development",
+                    description: "Node.js, Python, RESTful APIs, GraphQL",
+                  },
+                  {
+                    icon: <Database className="w-8 h-8" />,
+                    title: "Database Management",
+                    description: "MongoDB, PostgreSQL, MySQL",
+                  },
+                  {
+                    icon: <Terminal className="w-8 h-8" />,
+                    title: "DevOps",
+                    description: "Git, Docker, CI/CD, Cloud Services",
+                  },
+                  {
+                    icon: <Cpu className="w-8 h-8" />,
+                    title: "Programming Languages",
+                    description: "JavaScript, Python, Java, C++",
+                  },
+                  {
+                    icon: <Globe className="w-8 h-8" />,
+                    title: "Web Technologies",
+                    description: "HTML5, CSS3, REST APIs, WebSockets",
+                  },
+                ].map((skill, index) => (
+                  <motion.div
+                    key={index}
+                    variants={fadeIn}
+                    whileHover={{ y: -5 }}
+                    className="group"
+                  >
+                    <div className="p-6 rounded-lg bg-gray-900/50 border border-cyan-500/20 hover:border-cyan-500/50 transition-colors">
+                      <div className="text-cyan-400 mb-4">{skill.icon}</div>
+                      <h3 className="text-xl font-bold mb-2">{skill.title}</h3>
+                      <p className="text-gray-400">{skill.description}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </AnimatedSection>
+      </Element>
+
+      {/* Projects Section */}
+      <Element name="projects" id="projects">
+        <AnimatedSection className="py-20 bg-gray-900/50">
+          <div className="container mx-auto px-4">
+            <div className="space-y-12">
+              <div className="text-center space-y-4">
+                <motion.h2 variants={fadeIn} className="text-4xl font-bold">
+                  FEATURED <span className="text-cyan-400">PROJECTS</span>
+                </motion.h2>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  {
+                    title: "E-Commerce Platform",
+                    description:
+                      "Full-stack e-commerce solution with React, Node.js, and MongoDB",
+                    tech: ["React", "Node.js", "MongoDB", "Redux"],
+                    image: "/placeholder.svg?height=200&width=400",
+                  },
+                  {
+                    title: "Task Management App",
+                    description:
+                      "Real-time task management application with collaborative features",
+                    tech: ["Next.js", "TypeScript", "PostgreSQL", "WebSocket"],
+                    image: "/placeholder.svg?height=200&width=400",
+                  },
+                  {
+                    title: "Social Media Dashboard",
+                    description:
+                      "Analytics dashboard for social media metrics and engagement",
+                    tech: ["Vue.js", "Python", "Django", "Chart.js"],
+                    image: "/placeholder.svg?height=200&width=400",
+                  },
+                ].map((project, index) => (
+                  <motion.div
+                    key={index}
+                    variants={fadeIn}
+                    whileHover={{ y: -5 }}
+                    className="group"
+                  >
+                    <div className="rounded-lg overflow-hidden bg-gray-900/50 border border-cyan-500/20 hover:border-cyan-500/50 transition-colors">
+                      <div className="relative h-48">
+                        <Image
+                          src={project.image || "/placeholder.svg"}
+                          alt={project.title}
+                          fill
+                          className="object-cover"
+                        />
+
+                        <div className="absolute inset-0 bg-cyan-500/20 group-hover:bg-cyan-500/30 transition-colors" />
+                      </div>
+                      <div className="p-6">
+                        <h3 className="text-xl font-bold mb-2">
+                          {project.title}
+                        </h3>
+                        <p className="text-gray-400 mb-4">
+                          {project.description}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {project.tech.map((tech, techIndex) => (
+                            <span
+                              key={techIndex}
+                              className="text-xs px-2 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </AnimatedSection>
+      </Element>
+
+      {/* Contact Section */}
+      <Element name="contact" id="contact">
+        <AnimatedSection className="py-20 bg-gray-900/50">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center">
+              <motion.h2 variants={fadeIn} className="text-4xl font-bold mb-8">
+                GET IN <span className="text-cyan-400">TOUCH</span>
+              </motion.h2>
+              <motion.div variants={fadeIn}>
+                <form className="grid md:grid-cols-2 gap-6">
+                  <input
+                    type="text"
+                    placeholder="Name"
+                    className="bg-gray-900/50 border border-cyan-500/20 rounded-lg p-4 focus:border-cyan-500 transition-colors"
+                  />
+
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    className="bg-gray-900/50 border border-cyan-500/20 rounded-lg p-4 focus:border-cyan-500 transition-colors"
+                  />
+
+                  <textarea
+                    placeholder="Message"
+                    className="md:col-span-2 bg-gray-900/50 border border-cyan-500/20 rounded-lg p-4 h-40 focus:border-cyan-500 transition-colors"
+                  ></textarea>
+                  <div className="md:col-span-2">
+                    <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-black">
+                      Send Message
+                    </Button>
+                  </div>
+                </form>
+              </motion.div>
+            </div>
+          </div>
+        </AnimatedSection>
+      </Element>
+
+      {/* Footer */}
+      <footer className="py-8 border-t border-cyan-500/20">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-400">
+              © 2024 Neil Jay Mikheil B. Gammad. All rights reserved.
+            </p>
+            <div className="flex gap-4">
+              {[Github, Twitter, Linkedin, Mail].map((Icon, index) => (
+                <a
+                  key={index}
+                  href="#"
+                  className="text-gray-400 hover:text-cyan-400 transition-colors"
+                >
+                  <Icon className="w-6 h-6" />
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   );
