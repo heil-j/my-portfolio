@@ -22,6 +22,7 @@ import Image from "next/image";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { Inter } from "next/font/google";
+import { FloatingDock } from "@/components/ui/floating-dock";
 
 const InterCode = Inter({ subsets: ["latin"] });
 
@@ -155,7 +156,7 @@ export default function Portfolio() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["hero", "skills", "projects", "about", "contact"];
+      const sections = ["home", "skills", "projects", "about", "contact"];
       const scrollPosition = window.scrollY + window.innerHeight / 2;
 
       for (const section of sections) {
@@ -185,49 +186,60 @@ export default function Portfolio() {
     });
   };
 
+  const sections: string[] = ["home", "about", "skills", "projects", "contact"];
+
+  const scrollToSection = (section: string) => {
+    const element = document.getElementById(section);
+    if (element) {
+      scroll.scrollTo(element.offsetTop, {
+        duration: 500,
+        smooth: true,
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 z-50 w-full bg-black/80 backdrop-blur-sm border-b border-cyan-500/20">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <button
-            onClick={() => handleNavClick("hero")}
-            className={`${InterCode.className} text-xl font-bold text-cyan-400 cursor-pointer`}
-          >
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-90 backdrop-blur-md shadow-md">
+        <div className="container mx-auto flex justify-between items-center py-4 px-6">
+          <div className="text-cyan-400 text-2xl font-bold cursor-pointer" onClick={() => handleNavClick("home")}>
             NJMG.dev
-          </button>
-          <div className={`${InterCode.className} hidden md:flex gap-8`}>
-            {[
-              { label: "HOME", to: "hero" },
-              { label: "ABOUT", to: "about" },
-              { label: "SKILLS", to: "skills" },
-              { label: "PROJECTS", to: "projects" },
-              { label: "CONTACT", to: "contact" },
-            ].map((item) => (
-              <button
-                key={item.label}
-                onClick={() => handleNavClick(item.to)}
-                className={`hover:text-cyan-400 transition-colors cursor-pointer ${
-                  activeSection === item.to ? "text-cyan-400" : ""
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
           </div>
+          <ul className="flex space-x-6">
+            {sections.map((section: string) => (
+              <li key={section}>
+                <button
+                  onClick={() => scrollToSection(section)}
+                  className={`relative px-3 py-2 text-sm font-medium transition-colors duration-300 ${
+                    activeSection === section ? "text-cyan-400" : "text-gray-400"
+                  } hover:text-cyan-400`}
+                >
+                  {section.toUpperCase()}
+                  {activeSection === section && (
+                    <motion.div
+                      className="absolute bottom-0 left-0 h-0.5 w-full bg-cyan-400"
+                      layoutId="underline"
+                      initial={false}
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    />
+                  )}
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <Element name="hero" id="hero">
+      {/* Home Section */}
+      <Element name="home" id="home">
         <AnimatedSection className="relative min-h-screen flex items-center pt-16 overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(0,255,255,0.15),transparent_50%)]" />
 
           <div className="container mx-auto px-4">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <motion.div variants={fadeInLeft} className="space-y-6">
-                <span className="text-cyan-400 text-sm uppercase tracking-wider">
-                  Software Engineer
+                <span className="text-cyan-400 text-sm uppercase tracking-tighter">
+                  Aspring Software Engineer
                 </span>
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
                   Neil Jay Mikheil
