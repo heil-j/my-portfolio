@@ -22,8 +22,7 @@ import Image from "next/image";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { Inter } from "next/font/google";
-import { FloatingDock } from "@/components/ui/floating-dock";
-
+import { Menu, X } from "lucide-react";
 const InterCode = Inter({ subsets: ["latin"] });
 
 // Animation variants
@@ -153,6 +152,7 @@ const AnimatedSection = ({
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -201,15 +201,31 @@ export default function Portfolio() {
   return (
     <div className="min-h-screen bg-black text-white">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-90 backdrop-blur-md shadow-md">
-        <div className="container mx-auto flex justify-between items-center py-4 px-6">
-          <div className="text-cyan-400 text-2xl font-bold cursor-pointer" onClick={() => handleNavClick("home")}>
-            NJMG.dev
+        <div className="container mx-auto flex justify-between items-center">
+          <div className="cursor-pointer" onClick={() => handleNavClick("home")}>
+            <div className="transform scale-150"> {/* Adjust the scale value as needed */}
+              <Image
+                src="/images/2_transparent_Craiyon.png"
+                alt="Logo"
+                width={70} // Original width
+                height={70} // Original height
+                className="object-contain max-h-full"
+              />
+            </div>
           </div>
-          <ul className="flex space-x-6">
+          <div className="lg:hidden ml-auto">
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? <X className="w-6 h-6 text-white" /> : <Menu className="w-6 h-6 text-white" />}
+            </button>
+          </div>
+          <ul className="hidden lg:flex space-x-6 ml-auto">
             {sections.map((section: string) => (
               <li key={section}>
                 <button
-                  onClick={() => scrollToSection(section)}
+                  onClick={() => {
+                    scrollToSection(section);
+                    setIsMenuOpen(false);
+                  }}
                   className={`relative px-3 py-2 text-sm font-medium transition-colors duration-300 ${
                     activeSection === section ? "text-cyan-400" : "text-gray-400"
                   } hover:text-cyan-400`}
@@ -228,7 +244,43 @@ export default function Portfolio() {
             ))}
           </ul>
         </div>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="lg:hidden bg-black bg-opacity-90 backdrop-blur-md shadow-md mt-2"
+          >
+            <ul className="flex flex-col items-center space-y-4 p-4">
+              {sections.map((section: string) => (
+                <li key={section}>
+                  <button
+                    onClick={() => {
+                      scrollToSection(section);
+                      setIsMenuOpen(false);
+                    }}
+                    className={`relative px-3 py-2 text-sm font-medium transition-colors duration-300 ${
+                      activeSection === section ? "text-cyan-400" : "text-gray-400"
+                    } hover:text-cyan-400`}
+                  >
+                    {section.toUpperCase()}
+                    {activeSection === section && (
+                      <motion.div
+                        className="absolute bottom-0 left-0 h-0.5 w-full bg-cyan-400"
+                        layoutId="underline"
+                        initial={false}
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      />
+                    )}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
       </nav>
+
+
 
       {/* Home Section */}
       <Element name="home" id="home">
