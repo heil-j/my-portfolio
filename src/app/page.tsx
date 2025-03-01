@@ -23,8 +23,162 @@ import { motion, useAnimation, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { Inter } from "next/font/google";
 import { Menu, X } from "lucide-react";
+import { Timeline } from "@/components/ui/timeline";
 const InterCode = Inter({ subsets: ["latin"] });
 
+export function TimelineDemo() {
+  const data = [
+    {
+      title: "2024",
+      content: (
+        <div>
+          <p className="text-neutral-1000 dark:text-[rgb(195,195,195)] text-sm md:text-lg font-normal mb-8 tracking-tighter">
+            Built and launched Aceternity UI and Aceternity UI Pro from scratch
+          </p>
+          <div className="grid grid-cols-2 gap-4">
+            <Image
+              src="/images/leo.jpg"
+              alt="startup template"
+              width={500}
+              height={500}
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+            />
+            <Image
+              src="/images/leo.jpg"
+              alt="startup template"
+              width={500}
+              height={500}
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+            />
+            <Image
+              src="/images/leo.jpg"
+              alt="startup template"
+              width={500}
+              height={500}
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+            />
+            <Image
+              src="/images/leo.jpg"
+              alt="startup template"
+              width={500}
+              height={500}
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+            />
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Early 2023",
+      content: (
+        <div>
+          <p className="text-neutral-1000 dark:text-[rgb(195,195,195)] text-sm md:text-lg font-normal mb-8 tracking-tighter">
+            I usually run out of copy, but when I see content this big, I try to
+            integrate lorem ipsum.
+          </p>
+          <p className="text-neutral-1000 dark:text-[rgb(195,195,195)] text-sm md:text-lg font-normal mb-8 tracking-tighter">
+            Lorem ipsum is for people who are too lazy to write copy. But we are
+            not. Here are some more example of beautiful designs I built.
+          </p>
+          <div className="grid grid-cols-2 gap-4">
+            <Image
+              src="/images/leo.jpg"
+              alt="hero template"
+              width={500}
+              height={500}
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+            />
+            <Image
+              src="/images/leo.jpg"
+              alt="feature template"
+              width={500}
+              height={500}
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+            />
+            <Image
+              src="/images/leo.jpg"
+              alt="bento template"
+              width={500}
+              height={500}
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+            />
+            <Image
+              src="/images/leo.jpg"
+              alt="cards template"
+              width={500}
+              height={500}
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+            />
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Changelog",
+      content: (
+        <div>
+          <p className="text-neutral-1000 dark:text-[rgb(195,195,195)] text-sm md:text-lg font-normal mb-8 tracking-tighter">
+            Deployed 5 new components on Aceternity today
+          </p>
+          <div className="mb-8">
+            <div className="flex gap-2 items-center text-neutral-1000 dark:text-[rgb(195,195,195)] dark:text-neutral-300 text-xs md:text-sm">
+              ✅ Card grid component
+            </div>
+            <div className="flex gap-2 items-center text-neutral-1000 dark:text-[rgb(195,195,195)] dark:text-neutral-300 text-xs md:text-sm">
+              ✅ Startup template Aceternity
+            </div>
+            <div className="flex gap-2 items-center text-neutral-1000 dark:text-[rgb(195,195,195)] dark:text-neutral-300 text-xs md:text-sm">
+              ✅ Random file upload lol
+            </div>
+            <div className="flex gap-2 items-center text-neutral-1000 dark:text-[rgb(195,195,195)] dark:text-neutral-300 text-xs md:text-sm">
+              ✅ Himesh Reshammiya Music CD
+            </div>
+            <div className="flex gap-2 items-center text-neutral-1000 dark:text-[rgb(195,195,195)] dark:text-neutral-300 text-xs md:text-sm">
+              ✅ Salman Bhai Fan Club registrations open
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <Image
+              src="/images/leo.jpg"
+              alt="hero template"
+              width={500}
+              height={500}
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+            />
+            <Image
+              src="/images/leo.jpg"
+              alt="feature template"
+              width={500}
+              height={500}
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+            />
+            <Image
+              src="/images/leo.jpg"
+              alt="bento template"
+              width={500}
+              height={500}
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0 rg
+              ba(255,_255,_255,_0.1)_inset]"
+            />
+            <Image
+              src="/images/leo.jpg"
+              alt="cards template"
+              width={500}
+              height={500}
+              className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px rg
+              ba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+            />
+          </div>
+        </div>
+      ),
+    },
+  ];
+  return (
+    <div className="w-full">
+      <Timeline data={data} />
+    </div>
+  );
+}
 // Animation variants
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -334,11 +488,10 @@ export default function Portfolio() {
         </AnimatedSection>
       </Element>
 
-      {/* About Section */}
-      <Element name="about" id="about">
+       {/* About Section */}
+       <Element name="about" id="about">
         <AnimatedSection className="py-20 relative">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,255,255,0.15),transparent_50%)]" />
-
           <div className="container mx-auto px-4">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <motion.div variants={fadeInLeft} className="space-y-6">
@@ -355,7 +508,6 @@ export default function Portfolio() {
                 <div className="grid grid-cols-2 gap-6">
                   <div className="p-4 rounded-lg bg-gray-900/50 border border-cyan-500/20">
                     <Terminal className="w-8 h-8 text-cyan-400 mb-2" />
-
                     <h3 className="text-lg font-bold mb-2">Problem Solver</h3>
                     <p className="text-gray-400 text-sm">
                       Analytical thinker with a passion for solving complex
@@ -364,7 +516,6 @@ export default function Portfolio() {
                   </div>
                   <div className="p-4 rounded-lg bg-gray-900/50 border border-cyan-500/20">
                     <Users className="w-8 h-8 text-cyan-400 mb-2" />
-
                     <h3 className="text-lg font-bold mb-2">Team Player</h3>
                     <p className="text-gray-400 text-sm">
                       Excellent communicator and collaborative team member
@@ -380,11 +531,11 @@ export default function Portfolio() {
                     fill
                     className="object-cover"
                   />
-
                   <div className="absolute inset-0 bg-cyan-500/20" />
                 </div>
               </motion.div>
             </div>
+            <TimelineDemo />
           </div>
         </AnimatedSection>
       </Element>
@@ -393,19 +544,14 @@ export default function Portfolio() {
       <Element name="skills" id="skills">
         <AnimatedSection className="py-20 relative">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,255,255,0.15),transparent_50%)]" />
-
           <div className="container mx-auto px-4">
             <div className="space-y-12">
               <div className="text-center space-y-4">
                 <motion.h2 variants={fadeIn} className="text-4xl font-bold">
                   TECHNICAL <span className="text-cyan-400">EXPERTISE</span>
                 </motion.h2>
-                <motion.p
-                  variants={fadeIn}
-                  className="text-gray-400 max-w-2xl mx-auto"
-                >
-                  Proficient in modern software development technologies and
-                  practices
+                <motion.p variants={fadeIn} className="text-gray-400 max-w-2xl mx-auto">
+                  Proficient in modern software development technologies and practices
                 </motion.p>
               </div>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -443,8 +589,7 @@ export default function Portfolio() {
                 ].map((skill, index) => (
                   <motion.div
                     key={index}
-                    variants={fadeIn}
-                    whileHover={{ y: -5 }}
+                    whileHover={{ scale: 1.05 }}
                     className="group"
                   >
                     <div className="p-6 rounded-lg bg-gray-900/50 border border-cyan-500/20 hover:border-cyan-500/50 transition-colors">
