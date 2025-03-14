@@ -204,7 +204,7 @@ export default function Portfolio() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-90 backdrop-blur-md shadow-md">
         <div className="container mx-auto flex justify-between items-center">
           <div className="cursor-pointer" onClick={() => handleNavClick("home")}>
-            <div className="transform scale-150"> {/* Adjust the scale value as needed */}
+          <div className="transform scale-125 md:scale-150"> {/* Adjust the scale value as needed */}
               <Image
                 src="/images/2_transparent_Craiyon.png"
                 alt="Logo"
@@ -292,7 +292,7 @@ export default function Portfolio() {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <motion.div variants={fadeInLeft} className="space-y-6">
                 <span className="text-cyan-400 text-sm uppercase tracking-tighter">
-                  Aspring Software Engineer
+                  Aspiring Software Engineer
                 </span>
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
                   Neil Jay Mikheil
