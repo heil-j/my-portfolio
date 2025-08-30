@@ -280,7 +280,9 @@ export default function Portfolio() {
 
   // Memoized values for better performance
   const mobileCheck = useCallback(() => {
-    setIsMobile(window.innerWidth < 768);
+    if (typeof window !== "undefined") {
+      setIsMobile(window.innerWidth < 768);
+    }
   }, []);
 
   const scrollHandler = useCallback(() => {
@@ -305,8 +307,10 @@ export default function Portfolio() {
   }, [mobileCheck]);
 
   useEffect(() => {
-    window.addEventListener("scroll", scrollHandler);
-    return () => window.removeEventListener("scroll", scrollHandler);
+    if (typeof window !== "undefined") {
+      window.addEventListener("scroll", scrollHandler);
+      return () => window.removeEventListener("scroll", scrollHandler);
+    }
   }, [scrollHandler]);
 
   const handleNavClick = useCallback((section: Section) => {
