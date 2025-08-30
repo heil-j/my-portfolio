@@ -6,11 +6,12 @@ import Image from "next/image";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { Element, animateScroll as scroll } from "react-scroll";
 import { Inter } from "next/font/google";
+import dynamic from "next/dynamic";
 
 // Components
 import { Button } from "@/components/ui/button";
 import { TimelineDemo } from "@/components/ui/TimelineDemo";
-import { World } from "@/components/ui/globe";
+const World = dynamic(() => import("@/components/ui/globe").then(mod => mod.World), { ssr: false });
 
 // Icons
 import {
