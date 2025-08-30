@@ -251,7 +251,7 @@ export function World(props: WorldProps) {
   const [dimensions, setDimensions] = useState({ width: 400, height: 400 });
 
   useLayoutEffect(() => {
-    if (!containerRef.current) return;
+  if (typeof window === "undefined" || !containerRef.current) return;
     const updateSize = () => {
       const rect = containerRef.current!.getBoundingClientRect();
       const size = Math.min(rect.width, rect.height);
