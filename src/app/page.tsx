@@ -7,7 +7,6 @@ import { motion, useAnimation, useInView } from "framer-motion";
 import { Element, animateScroll as scroll } from "react-scroll";
 import { Inter } from "next/font/google";
 import dynamic from "next/dynamic";
-
 // Components
 import { Button } from "@/components/ui/button";
 import { TimelineDemo } from "@/components/ui/TimelineDemo";
@@ -188,15 +187,15 @@ const PROJECTS: Project[] = [
     tech: ["Java"],
     image: "/images/Judo.png",
     liveDemoUrl: "#",
-    githubUrl: "#",
+    githubUrl: "https://github.com/heil-j/Judo-Training-Cost-Calculator",
   },
   {
     title: "DoBu Martial Arts Website",
     description: "Created a responsive website for DoBu Martial Arts using HTML, CSS, and JavaScript to showcase their services and classes.",
     tech: ["Html", "CSS", "JavaScript"],
     image: "/images/Dobu.png",
-    liveDemoUrl: "#",
-    githubUrl: "#",
+    liveDemoUrl: "https://dobu-martial-artss.vercel.app/",
+    githubUrl: "https://github.com/heil-j/dobu-martial-arts",
   },
   {
     title: "UI/UX Design for Boutiqa",
@@ -220,7 +219,7 @@ const PROJECTS: Project[] = [
     tech: ["Thymeleaf", "Spring Boot", "Tailwind", "Mysql"],
     image: "/images/fix-website-errors.png",
     liveDemoUrl: "#",
-    githubUrl: "#",
+    githubUrl: "https://github.com/heil-j/enomy-finance",
   },
   {
     title: "Meals on Wheels Full stack Web Application",
@@ -228,7 +227,7 @@ const PROJECTS: Project[] = [
     tech: ["Thymeleaf", "Spring Boot", "Tailwind", "Mysql"],
     image: "/images/mow.png",
     liveDemoUrl: "#",
-    githubUrl: "#",
+    githubUrl: "https://github.com/heil-j/mow",
   },
   {
     title: "Jumpstart Website with AI Chatbot Integration",
@@ -236,7 +235,7 @@ const PROJECTS: Project[] = [
     tech: ["Laravel", "React", "Tailwind", "Mysql"],
     image: "/images/jumpstart.png",
     liveDemoUrl: "#",
-    githubUrl: "#",
+    githubUrl: "https://github.com/heil-j/jumpstart-ecommerce",
   },
 ];
 
@@ -629,7 +628,7 @@ export default function Portfolio() {
                     tech: ["Java"],
                     image: "/images/Judo.png",
                     liveDemoUrl: "#",
-                    githubUrl: "#",
+                    githubUrl: "https://github.com/heil-j/Judo-Training-Cost-Calculator",
                   },
                   {
                     title: "DoBu Martial Arts Website",
@@ -637,8 +636,8 @@ export default function Portfolio() {
                       "Created a responsive website for DoBu Martial Arts using HTML, CSS, and JavaScript to showcase their services and classes.",
                     tech: ["Html", "CSS", "JavaScript"],
                     image: "/images/Dobu.png",
-                    liveDemoUrl: "#",
-                    githubUrl: "#",
+                    liveDemoUrl: "https://dobu-martial-artss.vercel.app/",
+                    githubUrl: "https://github.com/heil-j/dobu-martial-arts",
                   },
                   {
                     title: "UI/UX Design for Boutiqa",
@@ -665,7 +664,7 @@ export default function Portfolio() {
                     tech: ["Thymeleaf", "Spring Boot", "Tailwind", "Mysql"],
                     image: "/images/fix-website-errors.png",
                     liveDemoUrl: "#",
-                    githubUrl: "#",
+                    githubUrl: "https://github.com/heil-j/enomy-finance",
                   },
                   {
                     title: "Meals on Wheels Full stack Web Application",
@@ -674,7 +673,7 @@ export default function Portfolio() {
                     tech: ["Thymeleaf", "Spring Boot", "Tailwind", "Mysql"],
                     image: "/images/mow.png",
                     liveDemoUrl: "#",
-                    githubUrl: "#",
+                    githubUrl: "https://github.com/heil-j/mow",
                   },
                   {
                     title: "Jumpstart Website with AI Chatbot Integration",
@@ -683,7 +682,7 @@ export default function Portfolio() {
                     tech: ["Laravel", "React", "Tailwind", "Mysql"],
                     image: "/images/jumpstart.png",
                     liveDemoUrl: "#",
-                    githubUrl: "#",
+                    githubUrl: "https://github.com/heil-j/jumpstart-ecommerce",
                   },
                 ].map((project, index) => (
                   <motion.div
