@@ -348,7 +348,7 @@ export default function Portfolio() {
   }, [isMobile, activeProject]);
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden">
+    <div className="min-h-screen bg-black text-white">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-90 backdrop-blur-md shadow-md">
         <div className="container mx-auto flex justify-between items-center">
           <div className="cursor-pointer" onClick={() => handleNavClick("home")}>
@@ -483,72 +483,68 @@ export default function Portfolio() {
         </AnimatedSection>
       </Element>
 
-      {/* About Section */}
-      <Element name="about" id="about">
-        <AnimatedSection className="py-20 relative">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,255,255,0.15),transparent_50%)] pointer-events-none" />
-          <div className="container mx-auto px-4">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <motion.div variants={fadeInLeft} className="space-y-6">
-                <h2 className="text-4xl font-bold">
-                  ABOUT <span className="text-cyan-400">ME</span>
-                </h2>
-                <p className="text-gray-400">
-                  I am a passionate software engineering student from the
-                  Philippines, currently pursuing my degree at First City
-                  Providential College. My journey in technology began with a
-                  curiosity about how things work, which evolved into a deep
-                  passion for creating innovative solutions through code.
-                </p>
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="p-4 rounded-lg bg-gray-900/50 border border-cyan-500/20">
-                    <Terminal className="w-8 h-8 text-cyan-400 mb-2" />
-                    <h3 className="text-lg font-bold mb-2">Problem Solver</h3>
-                    <p className="text-gray-400 text-sm">
-                      Analytical thinker with a passion for solving complex
-                      challenges
-                    </p>
-                  </div>
-                  <div className="p-4 rounded-lg bg-gray-900/50 border border-cyan-500/20">
-                    <Users className="w-8 h-8 text-cyan-400 mb-2" />
-                    <h3 className="text-lg font-bold mb-2">Team Player</h3>
-                    <p className="text-gray-400 text-sm">
-                      Excellent communicator and collaborative team member
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-              <motion.div variants={fadeInRight} className="relative flex justify-center items-center">
-                <div
-                  className="
-    relative
-    aspect-square
-    max-w-[300px] sm:max-w-[350px] md:max-w-[400px] lg:max-w-[450px] xl:max-w-[500px]
-    w-full
-    mx-auto
-    rounded-full
-    overflow-hidden
-    bg-black
-    shadow-lg
-    flex items-center justify-center
-  "
-                  style={{ minHeight: "250px" }}
-                >
-                  <World globeConfig={globeConfig} data={connectionData} />
-                  <div className="absolute inset-0 pointer-events-none rounded-full" />
-                </div>
-              </motion.div>
+{/* About Section */}
+<Element name="about" id="about">
+  <AnimatedSection className="py-20 relative overflow-hidden">
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,255,255,0.15),transparent_50%)]"/>
+    <div className="container mx-auto px-4">
+      {/* ✅ stack on mobile, side-by-side on lg */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        
+        {/* Text Column */}
+        <motion.div variants={fadeInLeft} className="space-y-6">
+          <h2 className="text-3xl sm:text-4xl font-bold">
+            ABOUT <span className="text-cyan-400">ME</span>
+          </h2>
+          <p className="text-gray-400 text-base sm:text-lg leading-relaxed">
+            I am a passionate software engineering student from the
+            Philippines, currently pursuing my degree at First City
+            Providential College. My journey in technology began with a
+            curiosity about how things work, which evolved into a deep
+            passion for creating innovative solutions through code.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="p-4 rounded-lg bg-gray-900/50 border border-cyan-500/20">
+              <Terminal className="w-8 h-8 text-cyan-400 mb-2" />
+              <h3 className="text-lg font-bold mb-2">Problem Solver</h3>
+              <p className="text-gray-400 text-sm">
+                Analytical thinker with a passion for solving complex
+                challenges
+              </p>
             </div>
-            <TimelineDemo />
+            <div className="p-4 rounded-lg bg-gray-900/50 border border-cyan-500/20">
+              <Users className="w-8 h-8 text-cyan-400 mb-2" />
+              <h3 className="text-lg font-bold mb-2">Team Player</h3>
+              <p className="text-gray-400 text-sm">
+                Excellent communicator and collaborative team member
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Globe Column */}
+        <motion.div
+          variants={fadeInRight}
+          className="relative flex justify-center items-center"
+        >
+          {/* ✅ scale the globe responsively */}
+          <div className="relative w-[220px] sm:w-[280px] md:w-[350px] lg:w-[400px] xl:w-[450px] aspect-square mx-auto rounded-full overflow-hidden bg-black shadow-lg flex items-center justify-center">
+            <World globeConfig={globeConfig} data={connectionData} />
+            <div className="absolute inset-0 pointer-events-none rounded-full" />
+          </div>
+        </motion.div>
+      </div>
+           
           </div>
         </AnimatedSection>
       </Element>
 
       {/* Skills Section */}
       <Element name="skills" id="skills">
-        <AnimatedSection className="py-20 relative">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(0,255,255,0.15),transparent_50%)]" />
-          <div className="container mx-auto px-4">
+        <AnimatedSection className="relative min-h-[200vh] py-20">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,255,255,0.15),transparent_50%)] pointer-events-none" />
+          <div className="container mx-auto px-4 mb-20">
             <div className="space-y-12">
               <div className="text-center space-y-4">
                 <motion.h2 variants={fadeIn} className="text-4xl font-bold">
@@ -605,6 +601,7 @@ export default function Portfolio() {
                 ))}
               </div>
             </div>
+             <TimelineDemo />
           </div>
         </AnimatedSection>
       </Element>
@@ -702,7 +699,7 @@ export default function Portfolio() {
                       ${isMobile ? '' : 'hover:shadow-2xl hover:shadow-cyan-500/20'}
                       ${isMobile && activeProject === index ? 'border-cyan-500/50 shadow-2xl shadow-cyan-500/20' : ''}`}
                     >
-                      <div className="relative h-48">
+                      <div className="relative h-48 max-w-full">
                         <Image
                           src={project.image || "/placeholder.svg"}
                           alt={project.title}
