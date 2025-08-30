@@ -260,9 +260,16 @@ export function World(props: WorldProps) {
       setDimensions({ width: size, height: size });
     };
     updateSize();
-    const resizeObserver = new window.ResizeObserver(updateSize);
-    resizeObserver.observe(containerRef.current);
-    return () => resizeObserver.disconnect();
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof window !== "undefined" && window.ResizeObserver) {
+      resizeObserver = new window.ResizeObserver(updateSize);
+      resizeObserver.observe(containerRef.current);
+    }
+    return () => {
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
   }, []);
 
   // Camera aspect is always 1 for a square

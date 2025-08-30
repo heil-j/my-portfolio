@@ -286,15 +286,17 @@ export default function Portfolio() {
   }, []);
 
   const scrollHandler = useCallback(() => {
-    const scrollPosition = window.scrollY + window.innerHeight / 2;
+    if (typeof window !== "undefined") {
+      const scrollPosition = window.scrollY + window.innerHeight / 2;
 
-    for (const section of SECTIONS) {
-      const element = document.getElementById(section);
-      if (element) {
-        const { offsetTop, offsetHeight } = element;
-        if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-          setActiveSection(section);
-          break;
+      for (const section of SECTIONS) {
+        const element = document.getElementById(section);
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section);
+            break;
+          }
         }
       }
     }
@@ -315,23 +317,27 @@ export default function Portfolio() {
 
   const handleNavClick = useCallback((section: Section) => {
     setActiveSection(section);
-    const element = document.getElementById(section);
-    if (element) {
-      scroll.scrollTo(element.offsetTop, {
-        duration: 500,
-        smooth: true,
-      });
+    if (typeof window !== "undefined") {
+      const element = document.getElementById(section);
+      if (element) {
+        scroll.scrollTo(element.offsetTop, {
+          duration: 500,
+          smooth: true,
+        });
+      }
     }
   }, []);
 
   const scrollToSection = useCallback((section: Section) => {
-    const element = document.getElementById(section);
-    if (element) {
-      scroll.scrollTo(element.offsetTop, {
-        duration: 500,
-        smooth: true,
-      });
-      setIsMenuOpen(false);
+    if (typeof window !== "undefined") {
+      const element = document.getElementById(section);
+      if (element) {
+        scroll.scrollTo(element.offsetTop, {
+          duration: 500,
+          smooth: true,
+        });
+        setIsMenuOpen(false);
+      }
     }
   }, []);
 
