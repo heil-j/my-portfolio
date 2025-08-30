@@ -1,8 +1,18 @@
 "use client";
 
 import type React from "react";
+import { useRef, useState, useEffect, useMemo, useCallback } from "react";
+import Image from "next/image";
+import { motion, useAnimation, useInView } from "framer-motion";
+import { Element, animateScroll as scroll } from "react-scroll";
+import { Inter } from "next/font/google";
 
+// Components
 import { Button } from "@/components/ui/button";
+import { TimelineDemo } from "@/components/ui/TimelineDemo";
+import { World } from "@/components/ui/globe";
+
+// Icons
 import {
   Download,
   Github,
@@ -16,14 +26,13 @@ import {
   Cpu,
   Globe,
   Users,
+  Menu,
+  X,
 } from "lucide-react";
-import { Element, animateScroll as scroll } from "react-scroll";
-import Image from "next/image";
-import { motion, useAnimation, useInView } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
-import { Inter } from "next/font/google";
-import { Menu, X } from "lucide-react";
-import { TimelineDemo } from "@/components/ui/TimelineDemo";
+
+// Config
+import { globeConfig, connectionData } from "@/data/globeConfig";
+
 const InterCode = Inter({ subsets: ["latin"] });
 
 // Animation variants
@@ -151,45 +160,157 @@ const AnimatedSection = ({
   );
 };
 
+// Types
+interface Project {
+  title: string;
+  description: string;
+  tech: string[];
+  image: string;
+  liveDemoUrl: string;
+  githubUrl: string;
+}
+
+interface Skill {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}
+
+// Constants
+const SECTIONS = ["home", "about", "skills", "projects", "contact"] as const;
+type Section = typeof SECTIONS[number];
+
+const PROJECTS: Project[] = [
+  {
+    title: "Judo Training Cost Calculator",
+    description: "Developed a fee calculation program for North Sussex Judo that automates monthly training cost calculations for athletes.",
+    tech: ["Java"],
+    image: "/images/Judo.png",
+    liveDemoUrl: "#",
+    githubUrl: "#",
+  },
+  {
+    title: "DoBu Martial Arts Website",
+    description: "Created a responsive website for DoBu Martial Arts using HTML, CSS, and JavaScript to showcase their services and classes.",
+    tech: ["Html", "CSS", "JavaScript"],
+    image: "/images/Dobu.png",
+    liveDemoUrl: "#",
+    githubUrl: "#",
+  },
+  {
+    title: "UI/UX Design for Boutiqa",
+    description: "Designed a user-friendly e-commerce platform for Boutiqa, focusing on intuitive navigation and a seamless shopping experience.",
+    tech: ["AxureRP", "Figma"],
+    image: "/images/boutiqa.png",
+    liveDemoUrl: "#",
+    githubUrl: "#",
+  },
+  {
+    title: "Design & Implement Database for Manzaneque Limited",
+    description: "Designed and implemented a relational database using MySQL to manage inventory, sales, and customer data for Manzaneque Limited.",
+    tech: ["Mysql"],
+    image: "/images/DDI.png",
+    liveDemoUrl: "#",
+    githubUrl: "#",
+  },
+  {
+    title: "Enomy Finance Full Stack Application",
+    description: "Developed a full-stack finance management application using Thymeleaf and Spring Boot, enabling users to track expenses and budgets.",
+    tech: ["Thymeleaf", "Spring Boot", "Tailwind", "Mysql"],
+    image: "/images/fix-website-errors.png",
+    liveDemoUrl: "#",
+    githubUrl: "#",
+  },
+  {
+    title: "Meals on Wheels Full stack Web Application",
+    description: "Created a comprehensive meal delivery service application for Meals on Wheels using Thymeleaf and Spring Boot.",
+    tech: ["Thymeleaf", "Spring Boot", "Tailwind", "Mysql"],
+    image: "/images/mow.png",
+    liveDemoUrl: "#",
+    githubUrl: "#",
+  },
+  {
+    title: "Jumpstart Website with AI Chatbot Integration",
+    description: "Created a dynamic website for Jumpstart with integrated AI chatbot functionality using Laravel and React.",
+    tech: ["Laravel", "React", "Tailwind", "Mysql"],
+    image: "/images/jumpstart.png",
+    liveDemoUrl: "#",
+    githubUrl: "#",
+  },
+];
+
+const SKILLS: Skill[] = [
+  {
+    icon: <Code className="w-8 h-8" />,
+    title: "Frontend Development",
+    description: "React, Next.js, Bootstrap, Tailwind CSS, Vite",
+  },
+  {
+    icon: <Server className="w-8 h-8" />,
+    title: "Backend Development",
+    description: "Node.js, Laravel, Spring Boot, Thymeleaf",
+  },
+  {
+    icon: <Database className="w-8 h-8" />,
+    title: "Database Management",
+    description: "MySQL",
+  },
+  {
+    icon: <Terminal className="w-8 h-8" />,
+    title: "Tools & Platforms",
+    description: "Git, GitHub, VS Code, Eclipse, Figma, AxureRP",
+  },
+  {
+    icon: <Cpu className="w-8 h-8" />,
+    title: "Programming Languages",
+    description: "Java, Python, PHP, HTML, CSS, JavaScript",
+  },
+  {
+    icon: <Globe className="w-8 h-8" />,
+    title: "Testing and QA",
+    description: "Postman, JUnit, JMeter, Selenium",
+  },
+];
+
 export default function Portfolio() {
-  const [activeSection, setActiveSection] = useState("");
+  const [activeSection, setActiveSection] = useState<Section>("home");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeProject, setActiveProject] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const sections = ["home", "skills", "projects", "about", "contact"];
-      const scrollPosition = window.scrollY + window.innerHeight / 2;
-
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const { offsetTop, offsetHeight } = element;
-          if (
-            scrollPosition >= offsetTop &&
-            scrollPosition < offsetTop + offsetHeight
-          ) {
-            setActiveSection(section);
-            break;
-          }
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+  // Memoized values for better performance
+  const mobileCheck = useCallback(() => {
+    setIsMobile(window.innerWidth < 768);
   }, []);
 
-  const handleNavClick = (section: string) => {
+  const scrollHandler = useCallback(() => {
+    const scrollPosition = window.scrollY + window.innerHeight / 2;
+
+    for (const section of SECTIONS) {
+      const element = document.getElementById(section);
+      if (element) {
+        const { offsetTop, offsetHeight } = element;
+        if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+          setActiveSection(section);
+          break;
+        }
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    mobileCheck();
+    window.addEventListener('resize', mobileCheck);
+    return () => window.removeEventListener('resize', mobileCheck);
+  }, [mobileCheck]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", scrollHandler);
+    return () => window.removeEventListener("scroll", scrollHandler);
+  }, [scrollHandler]);
+
+  const handleNavClick = useCallback((section: Section) => {
     setActiveSection(section);
-    scroll.scrollTo(document.getElementById(section)!.offsetTop, {
-      duration: 500,
-      smooth: true,
-    });
-  };
-
-  const sections: string[] = ["home", "about", "skills", "projects", "contact"];
-
-  const scrollToSection = (section: string) => {
     const element = document.getElementById(section);
     if (element) {
       scroll.scrollTo(element.offsetTop, {
@@ -197,14 +318,31 @@ export default function Portfolio() {
         smooth: true,
       });
     }
-  };
+  }, []);
+
+  const scrollToSection = useCallback((section: Section) => {
+    const element = document.getElementById(section);
+    if (element) {
+      scroll.scrollTo(element.offsetTop, {
+        duration: 500,
+        smooth: true,
+      });
+      setIsMenuOpen(false);
+    }
+  }, []);
+
+  const handleProjectClick = useCallback((index: number) => {
+    if (isMobile) {
+      setActiveProject(activeProject === index ? null : index);
+    }
+  }, [isMobile, activeProject]);
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white overflow-x-hidden">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-90 backdrop-blur-md shadow-md">
         <div className="container mx-auto flex justify-between items-center">
           <div className="cursor-pointer" onClick={() => handleNavClick("home")}>
-          <div className="transform scale-125 md:scale-150"> {/* Adjust the scale value as needed */}
+            <div className="transform scale-125 md:scale-150">
               <Image
                 src="/images/2_transparent_Craiyon.png"
                 alt="Logo"
@@ -220,16 +358,15 @@ export default function Portfolio() {
             </button>
           </div>
           <ul className="hidden lg:flex space-x-6 ml-auto">
-            {sections.map((section: string) => (
+            {SECTIONS.map((section) => (
               <li key={section}>
                 <button
                   onClick={() => {
                     scrollToSection(section);
                     setIsMenuOpen(false);
                   }}
-                  className={`relative px-3 py-2 text-sm font-medium transition-colors duration-300 ${
-                    activeSection === section ? "text-cyan-400" : "text-gray-400"
-                  } hover:text-cyan-400`}
+                  className={`relative px-3 py-2 text-sm font-medium transition-colors duration-300 ${activeSection === section ? "text-cyan-400" : "text-gray-400"
+                    } hover:text-cyan-400`}
                 >
                   {section.toUpperCase()}
                   {activeSection === section && (
@@ -253,16 +390,15 @@ export default function Portfolio() {
             className="lg:hidden bg-black bg-opacity-90 backdrop-blur-md shadow-md mt-2"
           >
             <ul className="flex flex-col items-center space-y-4 p-4">
-              {sections.map((section: string) => (
+              {SECTIONS.map((section) => (
                 <li key={section}>
                   <button
                     onClick={() => {
                       scrollToSection(section);
                       setIsMenuOpen(false);
                     }}
-                    className={`relative px-3 py-2 text-sm font-medium transition-colors duration-300 ${
-                      activeSection === section ? "text-cyan-400" : "text-gray-400"
-                    } hover:text-cyan-400`}
+                    className={`relative px-3 py-2 text-sm font-medium transition-colors duration-300 ${activeSection === section ? "text-cyan-400" : "text-gray-400"
+                      } hover:text-cyan-400`}
                   >
                     {section.toUpperCase()}
                     {activeSection === section && (
@@ -281,13 +417,9 @@ export default function Portfolio() {
         )}
       </nav>
 
-
-
       {/* Home Section */}
       <Element name="home" id="home">
         <AnimatedSection className="relative min-h-screen flex items-center pt-16 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(0,255,255,0.15),transparent_50%)]" />
-
           <div className="container mx-auto px-4">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <motion.div variants={fadeInLeft} className="space-y-6">
@@ -305,20 +437,26 @@ export default function Portfolio() {
                   that makes a difference.
                 </p>
                 <motion.div variants={fadeIn} className="flex gap-4">
-                  <Button className="bg-cyan-500 hover:bg-cyan-600 text-black">
-                    <Download className="mr-2 h-4 w-4" />
-                    Download CV
+                  <Button
+                    asChild
+                    className="bg-cyan-500 hover:bg-cyan-600 text-black font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-black"
+                  >
+                    <a href="/cv.pdf" download className="flex items-center">
+                      <Download className="mr-2 h-4 w-4" />
+                      Download CV
+                    </a>
                   </Button>
                   <Button
                     variant="outline"
-                    className="border-cyan-500 text-cyan-400 hover:bg-cyan-500/10"
+                    className="border-cyan-500 text-cyan-400 font-semibold transition-all duration-300 transform hover:scale-105 hover:bg-cyan-500/20 hover:text-cyan-300 hover:shadow-lg hover:shadow-cyan-500/15 focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-black"
+                    onClick={() => scrollToSection("projects")}
                   >
                     View Projects
                   </Button>
                 </motion.div>
               </motion.div>
               <motion.div variants={fadeInRight} className="relative">
-                <div className="relative h-[500px] w-full rounded-2xl overflow-hidden">
+                <div className="relative aspect-[4/5] md:aspect-[3/4] w-full rounded-2xl overflow-hidden">
                   <Image
                     src="/images/leo.jpg"
                     alt="Profile"
@@ -326,19 +464,19 @@ export default function Portfolio() {
                     className="object-cover"
                   />
 
-                  <div className="absolute inset-0 bg-cyan-500/20" />
+                  <div className="absolute inset-0 bg-cyan-500/20 pointer-events-none" />
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent pointer-events-none" />
               </motion.div>
             </div>
           </div>
         </AnimatedSection>
       </Element>
 
-       {/* About Section */}
-       <Element name="about" id="about">
+      {/* About Section */}
+      <Element name="about" id="about">
         <AnimatedSection className="py-20 relative">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,255,255,0.15),transparent_50%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,255,255,0.15),transparent_50%)] pointer-events-none" />
           <div className="container mx-auto px-4">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <motion.div variants={fadeInLeft} className="space-y-6">
@@ -370,15 +508,24 @@ export default function Portfolio() {
                   </div>
                 </div>
               </motion.div>
-              <motion.div variants={fadeInRight} className="relative">
-                <div className="relative h-[600px] w-full rounded-2xl overflow-hidden">
-                  <Image
-                    src="/placeholder.svg?height=600&width=600"
-                    alt="About Me"
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-cyan-500/20" />
+              <motion.div variants={fadeInRight} className="relative flex justify-center items-center">
+                <div
+                  className="
+    relative
+    aspect-square
+    max-w-[300px] sm:max-w-[350px] md:max-w-[400px] lg:max-w-[450px] xl:max-w-[500px]
+    w-full
+    mx-auto
+    rounded-full
+    overflow-hidden
+    bg-black
+    shadow-lg
+    flex items-center justify-center
+  "
+                  style={{ minHeight: "250px" }}
+                >
+                  <World globeConfig={globeConfig} data={connectionData} />
+                  <div className="absolute inset-0 pointer-events-none rounded-full" />
                 </div>
               </motion.div>
             </div>
@@ -406,32 +553,32 @@ export default function Portfolio() {
                   {
                     icon: <Code className="w-8 h-8" />,
                     title: "Frontend Development",
-                    description: "React.js, Next.js, TypeScript, Tailwind CSS",
+                    description: "React, Next.js, Bootstrap, Tailwind CSS, Vite",
                   },
                   {
                     icon: <Server className="w-8 h-8" />,
                     title: "Backend Development",
-                    description: "Node.js, Python, RESTful APIs, GraphQL",
+                    description: "Node.js, Laravel, Spring Boot, Thymeleaf",
                   },
                   {
                     icon: <Database className="w-8 h-8" />,
                     title: "Database Management",
-                    description: "MongoDB, PostgreSQL, MySQL",
+                    description: "MySQL",
                   },
                   {
                     icon: <Terminal className="w-8 h-8" />,
-                    title: "DevOps",
-                    description: "Git, Docker, CI/CD, Cloud Services",
+                    title: "Tools & Platforms",
+                    description: "Git, GitHub, VS Code, Eclipse, Figma, AxureRP",
                   },
                   {
                     icon: <Cpu className="w-8 h-8" />,
                     title: "Programming Languages",
-                    description: "JavaScript, Python, Java, C++",
+                    description: "Java, Python, PHP, HTML, CSS, JavaScript",
                   },
                   {
                     icon: <Globe className="w-8 h-8" />,
-                    title: "Web Technologies",
-                    description: "HTML5, CSS3, REST APIs, WebSockets",
+                    title: "Testing and QA",
+                    description: "Postman, JUnit, JMeter, Selenium",
                   },
                 ].map((skill, index) => (
                   <motion.div
@@ -462,59 +609,165 @@ export default function Portfolio() {
                   FEATURED <span className="text-cyan-400">PROJECTS</span>
                 </motion.h2>
               </div>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
                 {[
                   {
-                    title: "E-Commerce Platform",
+                    title: "Judo Training Cost Calculator",
                     description:
-                      "Full-stack e-commerce solution with React, Node.js, and MongoDB",
-                    tech: ["React", "Node.js", "MongoDB", "Redux"],
-                    image: "/placeholder.svg?height=200&width=400",
+                      "Developed a fee calculation program for North Sussex Judo that automates monthly training cost calculations for athletes.",
+                    tech: ["Java"],
+                    image: "/images/Judo.png",
+                    liveDemoUrl: "#",
+                    githubUrl: "#",
                   },
                   {
-                    title: "Task Management App",
+                    title: "DoBu Martial Arts Website",
                     description:
-                      "Real-time task management application with collaborative features",
-                    tech: ["Next.js", "TypeScript", "PostgreSQL", "WebSocket"],
-                    image: "/placeholder.svg?height=200&width=400",
+                      "Created a responsive website for DoBu Martial Arts using HTML, CSS, and JavaScript to showcase their services and classes.",
+                    tech: ["Html", "CSS", "JavaScript"],
+                    image: "/images/Dobu.png",
+                    liveDemoUrl: "#",
+                    githubUrl: "#",
                   },
                   {
-                    title: "Social Media Dashboard",
+                    title: "UI/UX Design for Boutiqa",
                     description:
-                      "Analytics dashboard for social media metrics and engagement",
-                    tech: ["Vue.js", "Python", "Django", "Chart.js"],
-                    image: "/placeholder.svg?height=200&width=400",
+                      "Designed a user-friendly e-commerce platform for Boutiqa, focusing on intuitive navigation and a seamless shopping experience.",
+                    tech: ["AxureRP", "Figma"],
+                    image: "/images/boutiqa.png",
+                    liveDemoUrl: "#",
+                    githubUrl: "#",
+                  },
+                  {
+                    title: "Design & Implement Database for Manzaneque Limited",
+                    description:
+                      "Designed and implemented a relational database using MySQL to manage inventory, sales, and customer data for Manzaneque Limited.",
+                    tech: ["Mysql"],
+                    image: "/images/DDI.png",
+                    liveDemoUrl: "#",
+                    githubUrl: "#",
+                  },
+                  {
+                    title: "Enomy Finance Full Stack Application",
+                    description:
+                      "Developed a full-stack finance management application using Thmyeleaf and Spring Boot, enabling users to track expenses and budgets.",
+                    tech: ["Thymeleaf", "Spring Boot", "Tailwind", "Mysql"],
+                    image: "/images/fix-website-errors.png",
+                    liveDemoUrl: "#",
+                    githubUrl: "#",
+                  },
+                  {
+                    title: "Meals on Wheels Full stack Web Application",
+                    description:
+                      "Created a comprehensive meal delivery service application for Meals on Wheels using Thymeleaf and Spring Boot.",
+                    tech: ["Thymeleaf", "Spring Boot", "Tailwind", "Mysql"],
+                    image: "/images/mow.png",
+                    liveDemoUrl: "#",
+                    githubUrl: "#",
+                  },
+                  {
+                    title: "Jumpstart Website with AI Chatbot Integration",
+                    description:
+                      "Created a dynamic website for Jumpstart with integrated AI chatbot functionality using Laravel and React.",
+                    tech: ["Laravel", "React", "Tailwind", "Mysql"],
+                    image: "/images/jumpstart.png",
+                    liveDemoUrl: "#",
+                    githubUrl: "#",
                   },
                 ].map((project, index) => (
                   <motion.div
                     key={index}
                     variants={fadeIn}
-                    whileHover={{ y: -5 }}
-                    className="group"
+                    whileHover={isMobile ? {} : { y: -8, scale: 1.02 }}
+                    className="group relative"
+                    onClick={() => {
+                      if (isMobile) {
+                        setActiveProject(activeProject === index ? null : index);
+                      }
+                    }}
                   >
-                    <div className="rounded-lg overflow-hidden bg-gray-900/50 border border-cyan-500/20 hover:border-cyan-500/50 transition-colors">
+                    <div className={`rounded-lg overflow-hidden bg-gray-900/50 border border-cyan-500/20 
+                      ${isMobile ? '' : 'hover:border-cyan-500/50'} 
+                      transition-all duration-300 transform 
+                      ${isMobile ? '' : 'hover:shadow-2xl hover:shadow-cyan-500/20'}
+                      ${isMobile && activeProject === index ? 'border-cyan-500/50 shadow-2xl shadow-cyan-500/20' : ''}`}
+                    >
                       <div className="relative h-48">
                         <Image
                           src={project.image || "/placeholder.svg"}
                           alt={project.title}
                           fill
-                          className="object-cover"
+                          className={`object-cover transition-transform duration-300 
+                            ${isMobile ? '' : 'group-hover:scale-105'}
+                            ${isMobile && activeProject === index ? 'scale-105' : ''}`}
                         />
 
-                        <div className="absolute inset-0 bg-cyan-500/20 group-hover:bg-cyan-500/30 transition-colors" />
+                        <div className={`absolute inset-0 bg-cyan-500/20 transition-colors
+                          ${isMobile ? '' : 'group-hover:bg-cyan-500/30'}
+                          ${isMobile && activeProject === index ? 'bg-cyan-500/30' : ''}`} 
+                        />
+                        
+                        {/* Action Buttons Overlay */}
+                        <div className={`absolute -bottom-2 left-0 right-0 top-0 w-full h-[calc(100%+0.5rem)] 
+                          flex items-center justify-center gap-4 transition-opacity duration-300 bg-black/70 z-10
+                          ${isMobile ? 
+                            (activeProject === index ? 'opacity-100' : 'opacity-0') : 
+                            'opacity-0 group-hover:opacity-100'}`}
+                        >
+                          {project.liveDemoUrl && (
+                            <Button
+                              asChild
+                              className="bg-cyan-500 hover:bg-cyan-600 text-black font-semibold transition-all duration-300 transform hover:scale-110 hover:shadow-lg hover:shadow-cyan-500/25 focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-black"
+                            >
+                              <a 
+                                href={project.liveDemoUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="flex items-center px-4 py-2"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                Live Demo
+                              </a>
+                            </Button>
+                          )}
+                          {project.githubUrl && (
+                            <Button
+                              variant="outline"
+                              className="border-cyan-500 text-cyan-400 font-semibold transition-all duration-300 transform hover:scale-110 hover:bg-cyan-500/20 hover:text-cyan-300 hover:shadow-lg hover:shadow-cyan-500/15 focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-black"
+                              asChild
+                            >
+                              <a 
+                                href={project.githubUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="flex items-center px-4 py-2"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <Github className="w-5 h-5 mr-2" />
+                                Code
+                              </a>
+                            </Button>
+                          )}
+                        </div>
                       </div>
                       <div className="p-6">
-                        <h3 className="text-xl font-bold mb-2">
+                        <h3 className={`text-xl font-bold mb-2 transition-colors duration-300
+                          ${isMobile ? '' : 'group-hover:text-cyan-400'}
+                          ${isMobile && activeProject === index ? 'text-cyan-400' : ''}`}
+                        >
                           {project.title}
                         </h3>
-                        <p className="text-gray-400 mb-4">
+                        <p className={`text-gray-400 mb-4 transition-colors duration-300
+                          ${isMobile ? '' : 'group-hover:text-gray-300'}
+                          ${isMobile && activeProject === index ? 'text-gray-300' : ''}`}
+                        >
                           {project.description}
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {project.tech.map((tech, techIndex) => (
                             <span
                               key={techIndex}
-                              className="text-xs px-2 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"
+                              className="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-1 rounded"
                             >
                               {tech}
                             </span>
@@ -526,10 +779,9 @@ export default function Portfolio() {
                 ))}
               </div>
             </div>
-          </div>
-        </AnimatedSection>
-      </Element>
-
+            </div>
+          </AnimatedSection>
+        </Element>
       {/* Contact Section */}
       <Element name="contact" id="contact">
         <AnimatedSection className="py-20 bg-gray-900/50">
@@ -557,7 +809,7 @@ export default function Portfolio() {
                     className="md:col-span-2 bg-gray-900/50 border border-cyan-500/20 rounded-lg p-4 h-40 focus:border-cyan-500 transition-colors"
                   ></textarea>
                   <div className="md:col-span-2">
-                    <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-black">
+                    <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-black">
                       Send Message
                     </Button>
                   </div>

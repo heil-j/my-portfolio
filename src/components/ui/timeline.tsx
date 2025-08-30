@@ -39,7 +39,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
     <div className={`w-full bg-transparent font-sans md:px-10 ${inter.className}`} ref={containerRef}>
       <div className="max-w-7xl mx-auto py-20 px-4 md:px-8 lg:px-10">
         <h2 className="text-lg md:text-4xl mb-4 text-white max-w-4xl tracking-tight">
-          Let me tell you a story...
+          Educational Background
         </h2>
         <p className="text-neutral-300 text-sm md:text-base max-w-sm tracking-tight">
           Hi, I'm an aspiring software engineer from the philippines and this is a timeline where my journey started.
