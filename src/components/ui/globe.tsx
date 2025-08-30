@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, useLayoutEffect } from "react";
-import { Color, Scene, Fog, PerspectiveCamera, Vector3 } from "three";
+import { Color, Scene, Fog, PerspectiveCamera, Vector3, Group } from "three";
 import ThreeGlobe from "three-globe";
 import { useThree, Canvas, extend } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
@@ -64,7 +64,7 @@ let numbersOfRings = [0];
 
 export function Globe({ globeConfig, data }: WorldProps) {
   const globeRef = useRef<ThreeGlobe | null>(null);
-  const groupRef = useRef();
+  const groupRef = useRef<Group | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
   const defaultProps = {
@@ -269,13 +269,11 @@ export function World(props: WorldProps) {
   return (
     <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
       <Canvas
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: dimensions.width, height: dimensions.height }}
         camera={camera}
         gl={{ preserveDrawingBuffer: true }}
         orthographic={false}
         frameloop="demand"
-        width={dimensions.width}
-        height={dimensions.height}
       >
         <WebGLRendererConfig />
         <ambientLight color={props.globeConfig.ambientLight} intensity={0.6} />
