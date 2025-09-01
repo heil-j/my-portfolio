@@ -33,6 +33,7 @@ import {
 
 // Config
 import { globeConfig, connectionData } from "@/data/globeConfig";
+import ContactForm from "@/components/ui/emailform";
 
 const InterCode = Inter({ subsets: ["latin"] });
 
@@ -826,29 +827,7 @@ export default function Portfolio() {
                 GET IN <span className="text-cyan-400">TOUCH</span>
               </motion.h2>
               <motion.div variants={fadeIn}>
-                <form className="grid md:grid-cols-2 gap-6">
-                  <input
-                    type="text"
-                    placeholder="Name"
-                    className="bg-gray-900/50 border border-cyan-500/20 rounded-lg p-4 focus:border-cyan-500 transition-colors"
-                  />
-
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    className="bg-gray-900/50 border border-cyan-500/20 rounded-lg p-4 focus:border-cyan-500 transition-colors"
-                  />
-
-                  <textarea
-                    placeholder="Message"
-                    className="md:col-span-2 bg-gray-900/50 border border-cyan-500/20 rounded-lg p-4 h-40 focus:border-cyan-500 transition-colors"
-                  ></textarea>
-                  <div className="md:col-span-2">
-                    <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-black">
-                      Send Message
-                    </Button>
-                  </div>
-                </form>
+                <ContactForm />
               </motion.div>
             </div>
           </div>
