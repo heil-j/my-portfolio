@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 // Components
 import { Button } from "@/components/ui/button";
 import { TimelineDemo } from "@/components/ui/TimelineDemo";
+import { MaintenanceModal } from "@/components/ui/MaintenanceModal";
 const World = dynamic(() => import("@/components/ui/globe").then(mod => mod.World), { ssr: false });
 
 // Icons
@@ -278,6 +279,10 @@ export default function Portfolio() {
   const [activeProject, setActiveProject] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
+  // New state for maintenance modal
+  const [isMaintenanceModalOpen, setIsMaintenanceModalOpen] = useState(false);
+  const [maintenanceProjectTitle, setMaintenanceProjectTitle] = useState<string | undefined>(undefined);
+
   // Memoized values for better performance
   const mobileCheck = useCallback(() => {
     if (typeof window !== "undefined") {
@@ -346,6 +351,23 @@ export default function Portfolio() {
       setActiveProject(activeProject === index ? null : index);
     }
   }, [isMobile, activeProject]);
+
+  // New handler for link clicks that may be under maintenance
+  const handleLinkClick = useCallback(
+    (url: string, projectTitle: string) => (e: React.MouseEvent) => {
+      if (url === "#") {
+        e.preventDefault();
+        setMaintenanceProjectTitle(projectTitle);
+        setIsMaintenanceModalOpen(true);
+      }
+    },
+    []
+  );
+
+  const closeMaintenanceModal = useCallback(() => {
+    setIsMaintenanceModalOpen(false);
+    setMaintenanceProjectTitle(undefined);
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -726,12 +748,15 @@ export default function Portfolio() {
                               asChild
                               className="bg-cyan-500 hover:bg-cyan-600 text-black font-semibold transition-all duration-300 transform hover:scale-110 hover:shadow-lg hover:shadow-cyan-500/25 focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-black"
                             >
-                              <a 
-                                href={project.liveDemoUrl} 
-                                target="_blank" 
+                              <a
+                                href={project.liveDemoUrl}
+                                target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center px-4 py-2"
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleLinkClick(project.liveDemoUrl, project.title)(e);
+                                }}
                               >
                                 Live Demo
                               </a>
@@ -743,12 +768,15 @@ export default function Portfolio() {
                               className="border-cyan-500 text-cyan-400 font-semibold transition-all duration-300 transform hover:scale-110 hover:bg-cyan-500/20 hover:text-cyan-300 hover:shadow-lg hover:shadow-cyan-500/15 focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-black"
                               asChild
                             >
-                              <a 
-                                href={project.githubUrl} 
-                                target="_blank" 
+                              <a
+                                href={project.githubUrl}
+                                target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center px-4 py-2"
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleLinkClick(project.githubUrl, project.title)(e);
+                                }}
                               >
                                 <Github className="w-5 h-5 mr-2" />
                                 Code
@@ -848,6 +876,13 @@ export default function Portfolio() {
           </div>
         </div>
       </footer>
+
+      {/* Maintenance Modal */}
+      <MaintenanceModal
+        isOpen={isMaintenanceModalOpen}
+        onClose={closeMaintenanceModal}
+        projectTitle={maintenanceProjectTitle}
+      />
     </div>
   );
 }
