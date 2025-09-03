@@ -474,7 +474,7 @@ export default function Portfolio() {
                     asChild
                     className="bg-cyan-500 hover:bg-cyan-600 text-black font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-black"
                   >
-                    <a href="/cv.pdf" download className="flex items-center">
+                    <a href="/Neil Jay Mikheil Gammad - Resume.pdf" download className="flex items-center">
                       <Download className="mr-2 h-4 w-4" />
                       Download CV
                     </a>
