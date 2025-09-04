@@ -624,14 +624,16 @@ export default function Portfolio() {
                 ))}
               </div>
             </div>
-             <TimelineDemo />
+            <div className="relative">
+              <TimelineDemo />
+            </div>
           </div>
         </AnimatedSection>
       </Element>
 
       {/* Projects Section */}
       <Element name="projects" id="projects">
-        <AnimatedSection className="py-20 bg-gray-900/50">
+        <AnimatedSection className="py-20 bg-gray-900/50 relative z-0">
           <div className="container mx-auto px-4">
             <div className="space-y-12">
               <div className="text-center space-y-4">
