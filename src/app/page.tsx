@@ -491,7 +491,7 @@ export default function Portfolio() {
               <motion.div variants={fadeInRight} className="relative">
                 <div className="relative aspect-[4/5] md:aspect-[3/4] w-full rounded-2xl overflow-hidden">
                   <Image
-                    src="/images/leo.jpg"
+                    src="/images/FORMAL.jpg"
                     alt="Profile"
                     fill
                     className="object-cover"
