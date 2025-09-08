@@ -5,6 +5,38 @@ import { Timeline } from "@/components/ui/timeline";
 
 export function TimelineDemo() {
     const data = [
+       {
+        title: "2024 - PRESENT",
+        content: (
+          <div>
+            <h3 className="text-xl md:text-2xl font-bold text-cyan-400 mb-2">
+              LITHAN EDUCLAAS
+            </h3>
+            <p className="text-cyan-300 text-sm md:text-base font-semibold mb-2">
+              Applied Degree in Software Engineering   
+            </p>
+            <p className="text-neutral-1000 dark:text-[rgb(195,195,195)] text-sm md:text-lg font-normal mb-8 tracking-tighter">
+              Enrolled in an Applied Degree program focusing on Software Engineering. Gained practical skills in software development, coding, and application design. Participated in hands-on projects and internships to apply theoretical knowledge in real-world scenarios.
+            </p>
+            <div className="grid grid-cols-2 gap-4">
+              <Image
+                src="/images/educlaas logo.webp"
+                alt="Lithan Logo"
+                width={500}
+                height={500}
+                className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              />
+              <Image
+                src="/images/lithan.webp"
+                alt="Lithan Building"
+                width={500}
+                height={500}
+                className="rounded-lg object-cover h-20 md:h-44 lg:h-60 w-full shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]"
+              />
+            </div>
+          </div>
+        ),
+      },
       {
         title: "2024 - PRESENT",
         content: (
